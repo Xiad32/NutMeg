@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/step_itemV"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_box"
+    android:layout_margin="4dp">
+
+
+    <TextView
+        android:id="@+id/stepNoTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/shortDescriptionTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/stepNoTV"
+        app:layout_constraintStart_toEndOf="@id/stepNoTV" />
+
+
+</android.support.constraint.ConstraintLayout>

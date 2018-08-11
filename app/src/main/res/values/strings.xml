@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">NutMeg</string>
+
+    <string name="title_activity_recipe_view">RecipeViewActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="tab_text_1">Recipe</string>
+    <string name="tab_text_2">Instructions</string>
+
+
+
+
+    <string-array name="fragmentTitles">
+        <item>Details</item>
+        <item>Instructions</item>
+    </string-array>
+    <string name="appwidget_text">Recipe</string>
+    <string name="add_widget">Add widget</string>
+    <string name="ingredients_label">Ingedients</string>
+    <string name="steps_label">Steps</string>
+    <string name="quantity_default">quantity</string>
+    <string name="ingredient_default">ingredient</string>
+    <string name="measure_Default">measure</string>
+    <string name="widget_label">Do you have what it takes:</string>
+    <string name="widget_button_label">Lets Bake It..!</string>
+    <string name="serves_label">Serves:</string>
+    <string name="previous_label">Previous</string>
+    <string name="next_label">Next</string>
+    <string name="arrow_next_desc">Arrow icon to navigate to next step</string>
+    <string name="arrow_prev_desc">Arrow icon to navigate to previous step</string>
+
+</resources>

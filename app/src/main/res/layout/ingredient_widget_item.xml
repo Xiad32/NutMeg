@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal">
+
+    <!--<android.support.v7.widget.AppCompatCheckBox-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/checkBox"-->
+        <!--android:gravity="center"-->
+        <!--app:layout_constraintStart_toStartOf="parent"/>-->
+
+    <TextView
+        android:id="@+id/quanitityTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="4dp"
+        android:text="@string/quantity_default"/>
+
+    <TextView
+        android:id="@+id/ingredientsTV"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:text="@string/ingredient_default"/>
+
+    <TextView
+        android:id="@+id/measureTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:text="@string/measure_Default"
+/>
+
+
+
+
+</LinearLayout>

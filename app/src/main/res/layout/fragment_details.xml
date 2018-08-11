@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".DetailsFragment">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/contraintParent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <!--<include-->
+        <!--android:id="@+id/include"-->
+        <!--layout="@layout/recipe_item" />-->
+
+        <TextView
+            android:id="@+id/ingredientsLabelTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/ingredients_label"
+            android:textAlignment="center"
+            android:textSize="@dimen/label_normal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ScrollView
+            android:id="@+id/ingredientsSV"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:elevation="4dp"
+            android:background="@color/colorWhite"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toTopOf="@id/guidelineHalfWay"
+            app:layout_constraintTop_toBottomOf="@id/ingredientsLabelTV">
+
+            <ListView
+                android:id="@+id/ingredientsLV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </ScrollView>
+
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guidelineHalfWay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/contraintParent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintGuide_percent="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
+
+        <TextView
+            android:id="@+id/stepsLabelTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/steps_label"
+            android:textAlignment="center"
+            android:textSize="@dimen/label_normal"
+            app:layout_constraintTop_toBottomOf="@id/guidelineHalfWay" />
+
+        <ScrollView
+            android:id="@+id/stepsSV"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:elevation="4dp"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toBottomOf="@id/contraintParent"
+            app:layout_constraintTop_toBottomOf="@id/stepsLabelTV">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/stepsRV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                />
+
+        </ScrollView>
+    </android.support.constraint.ConstraintLayout>
+
+</FrameLayout>
