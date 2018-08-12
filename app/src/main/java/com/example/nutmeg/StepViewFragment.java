@@ -62,6 +62,10 @@ public class StepViewFragment extends Fragment {
     private List<RecipeSteps> recipeSteps;
     private static boolean tablet;
     private List<RecipeSteps> recipeStock;
+    private static String PLAYER_PLAY_STATE = "player_state";
+    private static String PLAYER_POSITION = "player_position";
+    private static long recoveredPlayerPosition = 0;
+    private static boolean recoveredPlayerState = false;
 
     private SimpleExoPlayer mPlayer;
 
@@ -106,13 +110,48 @@ public class StepViewFragment extends Fragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d("StepViewFragment", "onDestroyView: "+"lifecycle");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("StepViewFragment", "onDestroy: "+"lifecycle");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(mPlayer!=null)
+            mPlayer.stop();
+        Log.d("StepViewFragment", "onPause: "+"lifecycle");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d("StepViewFragment", "onStop: "+"lifecycle");
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d("StepViewFragment", "onCreate: "+"lifecycle");
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //Recover player status if any:
+        Log.d("StepViewFragment", "onCreateView: "+"lifecycle");
+        if (savedInstanceState != null) {
+            recoveredPlayerState = savedInstanceState.getBoolean(PLAYER_PLAY_STATE, false);
+            recoveredPlayerPosition = savedInstanceState.getLong(PLAYER_POSITION, 0);
+        }
+
+
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_step_view, container, false);
         if (view.findViewById(R.id.stepDescriptionTV) == null)
@@ -139,9 +178,7 @@ public class StepViewFragment extends Fragment {
                         stepDescriptionTV.setText(recipeSteps.get(stepIndicator - 1).getDescription());
                     } else {
                         Log.i(TAG, "onCreateView: " + "No Steps to view");
-                        //TODO: handle this error
                     }
-                    //TODO: Set the default image to thumbnail if Available
                     if (!fullscreen)
                         setNavigationUI();
                     instantiatePlayer(recipeSteps.get(stepIndicator - 1).getVideoURL());
@@ -171,7 +208,9 @@ public class StepViewFragment extends Fragment {
 
 
             mPlayer.prepare(mediaSource);
-            mPlayer.setPlayWhenReady(false);
+            //Set State:
+            mPlayer.setPlayWhenReady(recoveredPlayerState);
+            mPlayer.seekTo(recoveredPlayerPosition);
         }
     }
 
@@ -189,7 +228,7 @@ public class StepViewFragment extends Fragment {
     }
 
     private void freePlayer(){
-        if (mPlayer != null){
+        if(mPlayer != null) {
             mPlayer.stop();
             mPlayer.release();
             mPlayer = null;
@@ -197,10 +236,19 @@ public class StepViewFragment extends Fragment {
     }
 
     private void setNavigationUI() {
+        if(previousArrowIV == null ||
+                previousTV == null ||
+                nextArrowIV == null ||
+                nextTV == null )
+            return;
+
         if (stepIndicator == 1) //No previous Navigation
         {
             previousTV.setTextColor(getContext().getResources().getColor(R.color.colorButtonInactive));
+            previousTV.setVisibility(View.INVISIBLE);
             previousTV.setOnClickListener(null);
+            previousArrowIV.setVisibility(View.INVISIBLE);
+            previousArrowIV.setOnClickListener(null);
         }
         else {
             if (!previousTV.hasOnClickListeners()) {
@@ -222,13 +270,21 @@ public class StepViewFragment extends Fragment {
                         onStepIndicatorChange();
                     }
                 });
+
             }
+            previousArrowIV.setVisibility(View.VISIBLE);
+            previousTV.setVisibility(View.VISIBLE);
             previousTV.setTextColor(getContext().getResources().getColor(R.color.colorButtonActive) );
         }
+
         if (stepIndicator == noOfSteps) //No more steps to go to
         {
             nextTV.setTextColor(getContext().getResources().getColor(R.color.colorButtonInactive));
+            nextArrowIV.setVisibility(View.INVISIBLE);
+            nextArrowIV.setOnClickListener(null);
+            nextTV.setVisibility(View.INVISIBLE);
             nextTV.setOnClickListener(null);
+
         }
         else{
             if (!nextTV.hasOnClickListeners()) {
@@ -257,6 +313,8 @@ public class StepViewFragment extends Fragment {
                     }
                 });
             }
+            nextArrowIV.setVisibility(View.VISIBLE);
+            nextTV.setVisibility(View.VISIBLE);
             nextTV.setTextColor(getContext().getResources().getColor(R.color.colorButtonActive) );
         }
     }
@@ -264,16 +322,21 @@ public class StepViewFragment extends Fragment {
     private void onStepIndicatorChange() {
         if (!tablet) {
             setNavigationUI();
-            stepDescriptionTV.setText(recipeStock.get(stepIndicator - 1).getDescription());
+            if (stepDescriptionTV != null)
+                stepDescriptionTV.setText(recipeStock.get(stepIndicator - 1).getDescription());
+
         }
-        mListener.onStepViewFragmentInteraction(stepIndicator);
+        if (mListener != null) {
+            mListener.onStepViewFragmentInteraction(stepIndicator);
+        }
         mPlayer.stop();
-        mPlayer.prepare(getMediaSource(recipeStock.get(stepIndicator-1).getVideoURL()));
+        mPlayer.prepare(getMediaSource(recipeStock.get(stepIndicator - 1).getVideoURL()));
         mPlayer.setPlayWhenReady(false);
     }
 
     public void updateStep(int position){
         stepIndicator = position + 1;
+        mPlayer.setPlayWhenReady(true);
         onStepIndicatorChange();
     }
 
@@ -287,14 +350,31 @@ public class StepViewFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+        Log.d("StepViewFragment", "onAttach: "+"lifecycle");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d("StepViewFragment", "onStart: "+"lifecycle");
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("StepViewFragment", "onResume: "+"lifecycle");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         freePlayer();
-        mListener = null;
+        Log.d("StepViewFragment", "onDetach: "+"lifecycle"+"lifecycle");
+        //mListener = null;
     }
+
+
 
     /**
      * This interface must be implemented by activities that contain this
@@ -308,5 +388,26 @@ public class StepViewFragment extends Fragment {
      */
     public interface OnStepViewFragmentInteractionListener {
         void onStepViewFragmentInteraction(int position);
+    }
+
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(PLAYER_PLAY_STATE, mPlayer.getPlayWhenReady());
+        outState.putLong(PLAYER_POSITION, mPlayer.getCurrentPosition());
+        Log.d("StepViewFragment", "onSaveInstanceState: "+"lifecycle");
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (mPlayer != null){
+            mPlayer.setPlayWhenReady(savedInstanceState.getBoolean(PLAYER_PLAY_STATE, false));
+            //mPlayer.seekTo(savedInstanceState.getLong(PLAYER_POSITION, 0));
+        }
+        Log.d("StepViewFragment", "onActivityCreated: "+"lifecycle");
+
+
     }
 }

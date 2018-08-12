@@ -142,7 +142,6 @@ implements StepsAdapter.onItemClickListener{
 
     public void onStepChange(int position){
         stepIndicator = position +1;
-        //mData. //TODO:need fix this!
         //stepsRV.setAdapter(mStepsAdapter);
         mStepsAdapter.updateSelected(position);
         //mStepsAdapter.updateData(mData, stepIndicator);

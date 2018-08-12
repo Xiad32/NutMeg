@@ -13,7 +13,6 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:src="@drawable/arrow_prev"
-        android:layout_alignParentLeft="true"
         android:id="@+id/widgetArrowPrev"/>
 
     <TextView
@@ -22,7 +21,6 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_margin="8dp"
         android:contentDescription="@string/appwidget_text"
         android:text="@string/appwidget_text"
         android:textColor="@color/colorWhite"
@@ -38,42 +36,38 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_height="match_parent"
         android:layout_below="@id/navBar"
-        android:background="@drawable/white_box">
+        android:layout_marginRight="24dp"
+        android:layout_marginLeft="24dp"
+        android:background="@drawable/white_box"
+        android:orientation="vertical">
 
         <TextView
+            android:id="@+id/textlabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/widget_label"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:textAlignment="textStart"
-            android:id="@+id/textlabel"
-            />
+            android:textAlignment="textStart" />
 
         <GridView
+            android:id="@+id/ingredients_listGV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/ingredients_listGV"
-            android:layout_below="@+id/textlabel"
             android:numColumns="1">
 
         </GridView>
 
         <Button
+            android:id="@+id/launchRecipe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/widget_button_label"
-            android:textStyle="italic"
             android:textColor="@color/colorButtonInactive"
-            android:layout_below="@id/ingredients_listGV"
-            android:id="@+id/launchRecipe"/>
+            android:textStyle="italic" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>

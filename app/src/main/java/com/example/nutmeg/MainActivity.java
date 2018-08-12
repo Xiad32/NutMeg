@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity
     {
 
         public static final String SP_NAME = "shared_ref_name";
+        private static final int STEP_VIEW_NUMBER = 1;
         /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -61,6 +63,10 @@ public class MainActivity extends AppCompatActivity
     private static boolean portrait;
     private DetailsFragment detailsFragment;
     private StepViewFragment stepViewFragment;
+    private static boolean landscape = false;
+    private static String STEP_VIEW_FRAGMENT_TAG = "stepViewTag";
+    private static String DETAILS_FRAGMENT_TAG = "detailsViewTag";
+
 
 
     @Nullable @BindView(R.id.recipieNameTV)
@@ -77,13 +83,17 @@ public class MainActivity extends AppCompatActivity
      */
     private ViewPager mViewPager;
     private int stepIndicator = 1;
-    private static boolean landscape = false;
+
 
         @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("MainActivity", "onCreate: "+"lifecycle");
         setContentView(R.layout.activity_main);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
         ButterKnife.bind(this);
+
         if (findViewById(R.id.tabs) == null)
             landscape = true;
         else
@@ -93,6 +103,15 @@ public class MainActivity extends AppCompatActivity
             portrait = true;
         else
             portrait = false;
+
+        //Instantiate the Fragments:
+
+//            detailsFragment = (DetailsFragment) fragmentManager.findFragmentByTag(DETAILS_FRAGMENT_TAG);
+        if(detailsFragment == null)
+            detailsFragment = new DetailsFragment();
+//            stepViewFragment = (StepViewFragment) fragmentManager.findFragmentByTag(STEP_VIEW_FRAGMENT_TAG);
+        if(stepViewFragment == null)
+            stepViewFragment = new StepViewFragment();
 
         if (!landscape) {
 
@@ -122,10 +141,11 @@ public class MainActivity extends AppCompatActivity
                 }
             });
 
-            //Instantiate the Fragments:
+            detachAllFragments();
+
             fragments = new ArrayList<>();
-            fragments.add(new DetailsFragment());
-            fragments.add(new StepViewFragment());
+            fragments.add(detailsFragment);
+            fragments.add(stepViewFragment);
 
             // Create the adapter that will return a fragment.
             // Instantiate adapter and add fragments
@@ -141,9 +161,11 @@ public class MainActivity extends AppCompatActivity
             tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
         }
         else if (portrait){ //landscape phone
-            FragmentManager fragmentManager = getSupportFragmentManager();
 
-            fragmentManager.beginTransaction().add(R.id.fullscreen_video_fragment, new StepViewFragment()).commit();
+            detachAllFragments();
+            fragmentManager.beginTransaction().add(R.id.fullscreen_video_fragment, stepViewFragment).commit();
+
+
         }
         else{ //tablet
 
@@ -168,10 +190,7 @@ public class MainActivity extends AppCompatActivity
                 }
             });
 
-            stepViewFragment = new StepViewFragment();
-            detailsFragment= new DetailsFragment();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-
+            detachAllFragments();
             fragmentManager.beginTransaction().add(R.id.step_view_fragment_tablet, stepViewFragment).commit();
             fragmentManager.beginTransaction().add(R.id.details_fragment_tablet, detailsFragment).commit();
 
@@ -182,8 +201,14 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+        private void detachAllFragments() {
+            for (Fragment fragment:getSupportFragmentManager().getFragments()) {
+                getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+            }
+        }
 
-    @Override
+
+        @Override
     public void onStepViewFragmentInteraction(int position) {
         stepIndicator = position;
         if (!landscape || portrait)
@@ -195,11 +220,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDetailsFragmentInteraction(int position) {
         stepIndicator = position;
+        if(portrait)
+            mViewPager.setCurrentItem(1, true);
         if(!landscape || portrait)
-            ( (StepViewFragment) fragments.get(1)).updateStep(position);
+            ( (StepViewFragment) fragments.get(STEP_VIEW_NUMBER)).updateStep(position);
         else
             stepViewFragment.updateStep(position);
 
+        if(mViewPager != null)
+            mViewPager.setCurrentItem(STEP_VIEW_NUMBER, true);
 
     }
 
@@ -275,4 +304,34 @@ public class MainActivity extends AppCompatActivity
             return 2;
         }
     }
-}
+
+    @Override
+    protected void onStart() {
+        Log.d("StepViewFragment", "onStart: "+"lifecycle");
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d("StepViewFragment", "onStop: "+"lifecycle");
+        super.onStop();
+    }
+
+        @Override
+        protected void onResume() {
+            Log.d("StepViewFragment", "onResume: "+"lifecycle");
+            super.onResume();
+        }
+
+        @Override
+        protected void onPause() {
+            Log.d("StepViewFragment", "onPause: "+"lifecycle");
+            super.onPause();
+        }
+
+        @Override
+        protected void onDestroy() {
+            Log.d("StepViewFragment", "onDestroy: "+"lifecycle");
+            super.onDestroy();
+        }
+    }
